@@ -20,7 +20,10 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.component('noticias-create',  require('./components/noticias/Create.vue'));
+Vue.component('noticias-edit',    require('./components/noticias/Edit.vue'));
+Vue.component('noticias-index',   require('./components/noticias/Index.vue'));
+Vue.component('noticias-show',    require('./components/noticias/Show.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
