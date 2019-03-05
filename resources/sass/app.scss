@@ -8,47 +8,67 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
-.navbar-laravel {
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+// Font Awesome
+@import '~@fortawesome/fontawesome-free/scss/fontawesome';
+@import '~@fortawesome/fontawesome-free/scss/regular';
+@import '~@fortawesome/fontawesome-free/scss/solid';
+@import '~@fortawesome/fontawesome-free/scss/brands';
+
+body {
+  min-height: 75rem; /* Can be removed; just added for demo purposes */
 }
 
-:root {
-  --jumbotron-padding-y: 3rem;
-  }
+.navbar {
+  margin-bottom: 0;
+}
 
-  .jumbotron {
-  padding-top: var(--jumbotron-padding-y);
-  padding-bottom: var(--jumbotron-padding-y);
+.jumbotron {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
   margin-bottom: 0;
   background-color: #fff;
-  }
-  @media (min-width: 768px) {
-  .jumbotron {
-      padding-top: calc(var(--jumbotron-padding-y) * 2);
-      padding-bottom: calc(var(--jumbotron-padding-y) * 2);
-  }
-  }
+}
 
-  .jumbotron p:last-child {
+.jumbotron p:last-child {
   margin-bottom: 0;
-  }
+}
 
-  .jumbotron-heading {
+.jumbotron-heading {
   font-weight: 300;
-  }
+}
 
-  .jumbotron .container {
+.jumbotron .container {
   max-width: 40rem;
-  }
+}
 
-  footer {
+.album {
+  min-height: 50rem; /* Can be removed; just added for demo purposes */
   padding-top: 3rem;
   padding-bottom: 3rem;
-  }
+  background-color: #f7f7f7;
+}
 
-  footer p {
+.card {
+  float: left;
+  width: 33.333%;
+  padding: .75rem;
+  margin-bottom: 2rem;
+  border: 0;
+}
+
+.card > img {
+  margin-bottom: .75rem;
+}
+
+.card-text {
+  font-size: 85%;
+}
+
+footer {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+footer p {
   margin-bottom: .25rem;
-  }
-
-  .box-shadow { box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }
+}

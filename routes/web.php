@@ -16,3 +16,4 @@ Route::get('/', function () {
 });
 
 require __DIR__ . '/noticias/noticias.php';
+require __DIR__ . '/categorias/categorias.php';
