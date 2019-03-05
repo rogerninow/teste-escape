@@ -10,7 +10,7 @@
                     
                    <div v-if="!loading">
                         <p>
-                            <img :data-src="noticia.url_foto" v-holder="'img=100px200?auto=yes&theme=social&text='+noticia.titulo+''" :alt="noticia.titulo">
+                            <img :src="'storage/'+noticia.url_foto" v-holder="'img=100px200?auto=yes&theme=social&text='+noticia.titulo+''" :alt="noticia.titulo">
                         </p>
 
                         <p>

@@ -41,6 +41,7 @@ Vue.component('noticias-edit',    require('./components/noticias/Edit.vue').defa
 Vue.component('noticias-index',   require('./components/noticias/Index.vue').default);
 Vue.component('noticias-show',    require('./components/noticias/Show.vue').default);
 Vue.component('noticias-ver',     require('./components/noticias/Ver.vue').default);
+Vue.component('noticias-imagem',     require('./components/noticias/Imagem.vue').default);
 
 Vue.component('categorias-create',  require('./components/categorias/Create.vue').default);
 Vue.component('categorias-edit',    require('./components/categorias/Edit.vue').default);

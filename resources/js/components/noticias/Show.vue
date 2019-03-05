@@ -14,7 +14,7 @@
             </div>
             <div class="row">
                 <div class="card col-4" style="cursor: pointer;" v-for="noticia in noticias" @click="ver(noticia.id)">
-                    <img :data-src="noticia.url_foto" v-holder="'img=100px200?auto=yes&theme=social&text='+noticia.titulo+''" :alt="noticia.titulo">
+                    <img :src="noticia.url_foto" v-holder="'img=100px200?auto=yes&theme=social&text='+noticia.titulo+''" :alt="noticia.titulo">
                     <p class="card-text">
                         {{noticia.texto.slice(0, 150)}}...
                         <button class="btn btn-secundary btn-sm text-muted float-right">Ler mais</button>

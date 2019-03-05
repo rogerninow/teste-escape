@@ -2232,6 +2232,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2289,6 +2294,26 @@ __webpack_require__.r(__webpack_exports__);
         }).then(function () {
           _this2.submiting = false;
         });
+      }
+    },
+    changeUrl: function changeUrl(url) {
+      var _this3 = this;
+
+      if (!this.submiting) {
+        if (this.noticia.url_foto) {
+          this.submiting = true;
+          axios.post("/api/portais/removelogo", {
+            url: this.noticia.url
+          }).then(function (response) {
+            _this3.noticia.url_foto = url;
+          }).catch(function (error) {
+            _this3.$toasted.error('Erro ao processar imagem!');
+          }).then(function () {
+            _this3.submiting = false;
+          });
+        } else {
+          this.noticia.url_foto = url;
+        }
       }
     },
     changeCategoria: function changeCategoria(categoria) {
@@ -2470,6 +2495,108 @@ __webpack_require__.r(__webpack_exports__);
     },
     close: function close() {
       this.$emit('close');
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/noticias/Imagem.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/noticias/Imagem.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      image: '',
+      submiting: false
+    };
+  },
+  mounted: function mounted() {
+    this.image = this.imagemUrl ? 'storage/' + this.imagemUrl : '';
+  },
+  methods: {
+    onFileChange: function onFileChange(e) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.createImage(files[0]);
+    },
+    createImage: function createImage(file) {
+      var reader = new FileReader();
+      var vm = this;
+
+      reader.onload = function (e) {
+        vm.image = e.target.result;
+      };
+
+      reader.readAsDataURL(file);
+      this.upload();
+    },
+    upload: function upload() {
+      var _this = this;
+
+      if (this.image && !this.submiting) {
+        this.submiting = true;
+        axios.post('/api/noticias/upload', {
+          logo: this.image
+        }).then(function (response) {
+          _this.submiting = false;
+
+          _this.$emit('changeUrl', response.data);
+        }).catch(function (error) {
+          _this.$toasted.error('Erro ao enviar imagem!');
+        });
+      }
+    },
+    removeLogo: function removeLogo() {
+      var _this2 = this;
+
+      if (this.imagemUrl && !this.submiting) {
+        this.submiting = true;
+        axios.post("/api/portais/removelogo", {
+          url: this.imagemUrl,
+          id: this.noticiaId
+        }).then(function (response) {
+          _this2.image = '';
+
+          _this2.$toasted.global.error('Logo removido!');
+
+          location.href = '/portais';
+        }).catch(function (error) {
+          _this2.errors = error.response.data.errors;
+          _this2.submiting = false;
+        });
+      } else {
+        this.image = '';
+        document.getElementById("inputFile").value = "";
+      }
+    },
+    openFile: function openFile() {
+      document.getElementById("inputFile").click();
     }
   }
 });
@@ -7335,6 +7462,25 @@ exports = module.exports = __webpack_require__(/*! ../../css-loader/lib/css-base
 
 // module
 exports.push([module.i, "\n@-webkit-keyframes vueContentPlaceholdersAnimation {\n0% {\n    -webkit-transform: translate3d(-30%, 0, 0);\n            transform: translate3d(-30%, 0, 0);\n}\n100% {\n    -webkit-transform: translate3d(100%, 0, 0);\n            transform: translate3d(100%, 0, 0);\n}\n}\n@keyframes vueContentPlaceholdersAnimation {\n0% {\n    -webkit-transform: translate3d(-30%, 0, 0);\n            transform: translate3d(-30%, 0, 0);\n}\n100% {\n    -webkit-transform: translate3d(100%, 0, 0);\n            transform: translate3d(100%, 0, 0);\n}\n}\n.vue-content-placeholders-heading {\n  display: flex;\n}\n[class^=\"vue-content-placeholders-\"] + .vue-content-placeholders-heading {\n    margin-top: 20px;\n}\n.vue-content-placeholders-heading__img {\n    position: relative;\n    overflow: hidden;\n    height: 15px;\n    background: #eee;\n    width: 60px;\n    height: 60px;\n    margin-right: 15px;\n}\n.vue-content-placeholders-is-rounded .vue-content-placeholders-heading__img {\n      border-radius: 6px;\n}\n.vue-content-placeholders-is-centered .vue-content-placeholders-heading__img {\n      margin-left: auto;\n      margin-right: auto;\n}\n.vue-content-placeholders-is-animated .vue-content-placeholders-heading__img::before {\n      content: '';\n      position: absolute;\n      top: 0;\n      left: 0;\n      width: 100vw;\n      max-width: 1000px;\n      height: 100%;\n      background: linear-gradient(to right, transparent 0%, #e1e1e1 15%, transparent 30%);\n      -webkit-animation-duration: 1.5s;\n              animation-duration: 1.5s;\n      -webkit-animation-fill-mode: forwards;\n              animation-fill-mode: forwards;\n      -webkit-animation-iteration-count: infinite;\n              animation-iteration-count: infinite;\n      -webkit-animation-name: vueContentPlaceholdersAnimation;\n              animation-name: vueContentPlaceholdersAnimation;\n      -webkit-animation-timing-function: linear;\n              animation-timing-function: linear;\n}\n.vue-content-placeholders-heading__content {\n    display: flex;\n    flex: 1;\n    flex-direction: column;\n    justify-content: center;\n}\n.vue-content-placeholders-heading__title {\n    position: relative;\n    overflow: hidden;\n    height: 15px;\n    background: #eee;\n    width: 85%;\n    margin-bottom: 10px;\n    background: #ccc;\n}\n.vue-content-placeholders-is-rounded .vue-content-placeholders-heading__title {\n      border-radius: 6px;\n}\n.vue-content-placeholders-is-centered .vue-content-placeholders-heading__title {\n      margin-left: auto;\n      margin-right: auto;\n}\n.vue-content-placeholders-is-animated .vue-content-placeholders-heading__title::before {\n      content: '';\n      position: absolute;\n      top: 0;\n      left: 0;\n      width: 100vw;\n      max-width: 1000px;\n      height: 100%;\n      background: linear-gradient(to right, transparent 0%, #e1e1e1 15%, transparent 30%);\n      -webkit-animation-duration: 1.5s;\n              animation-duration: 1.5s;\n      -webkit-animation-fill-mode: forwards;\n              animation-fill-mode: forwards;\n      -webkit-animation-iteration-count: infinite;\n              animation-iteration-count: infinite;\n      -webkit-animation-name: vueContentPlaceholdersAnimation;\n              animation-name: vueContentPlaceholdersAnimation;\n      -webkit-animation-timing-function: linear;\n              animation-timing-function: linear;\n}\n.vue-content-placeholders-heading__subtitle {\n    position: relative;\n    overflow: hidden;\n    height: 15px;\n    background: #eee;\n    width: 90%;\n}\n.vue-content-placeholders-is-rounded .vue-content-placeholders-heading__subtitle {\n      border-radius: 6px;\n}\n.vue-content-placeholders-is-centered .vue-content-placeholders-heading__subtitle {\n      margin-left: auto;\n      margin-right: auto;\n}\n.vue-content-placeholders-is-animated .vue-content-placeholders-heading__subtitle::before {\n      content: '';\n      position: absolute;\n      top: 0;\n      left: 0;\n      width: 100vw;\n      max-width: 1000px;\n      height: 100%;\n      background: linear-gradient(to right, transparent 0%, #e1e1e1 15%, transparent 30%);\n      -webkit-animation-duration: 1.5s;\n              animation-duration: 1.5s;\n      -webkit-animation-fill-mode: forwards;\n              animation-fill-mode: forwards;\n      -webkit-animation-iteration-count: infinite;\n              animation-iteration-count: infinite;\n      -webkit-animation-name: vueContentPlaceholdersAnimation;\n              animation-name: vueContentPlaceholdersAnimation;\n      -webkit-animation-timing-function: linear;\n              animation-timing-function: linear;\n}\n[class^=\"vue-content-placeholders-\"] + .vue-content-placeholders-text {\n  margin-top: 20px;\n}\n.vue-content-placeholders-text__line {\n  position: relative;\n  overflow: hidden;\n  height: 15px;\n  background: #eee;\n  width: 100%;\n  margin-bottom: 10px;\n}\n.vue-content-placeholders-is-rounded .vue-content-placeholders-text__line {\n    border-radius: 6px;\n}\n.vue-content-placeholders-is-centered .vue-content-placeholders-text__line {\n    margin-left: auto;\n    margin-right: auto;\n}\n.vue-content-placeholders-is-animated .vue-content-placeholders-text__line::before {\n    content: '';\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100vw;\n    max-width: 1000px;\n    height: 100%;\n    background: linear-gradient(to right, transparent 0%, #e1e1e1 15%, transparent 30%);\n    -webkit-animation-duration: 1.5s;\n            animation-duration: 1.5s;\n    -webkit-animation-fill-mode: forwards;\n            animation-fill-mode: forwards;\n    -webkit-animation-iteration-count: infinite;\n            animation-iteration-count: infinite;\n    -webkit-animation-name: vueContentPlaceholdersAnimation;\n            animation-name: vueContentPlaceholdersAnimation;\n    -webkit-animation-timing-function: linear;\n            animation-timing-function: linear;\n}\n.vue-content-placeholders-text__line:nth-child(4n + 1) {\n    width: 80%;\n}\n.vue-content-placeholders-text__line:nth-child(4n + 2) {\n    width: 100%;\n}\n.vue-content-placeholders-text__line:nth-child(4n + 3) {\n    width: 70%;\n}\n.vue-content-placeholders-text__line:nth-child(4n + 4) {\n    width: 85%;\n}\n.vue-content-placeholders-img {\n  position: relative;\n  overflow: hidden;\n  height: 15px;\n  background: #eee;\n  width: 100%;\n  height: 120px;\n}\n.vue-content-placeholders-is-rounded .vue-content-placeholders-img {\n    border-radius: 6px;\n}\n.vue-content-placeholders-is-centered .vue-content-placeholders-img {\n    margin-left: auto;\n    margin-right: auto;\n}\n.vue-content-placeholders-is-animated .vue-content-placeholders-img::before {\n    content: '';\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100vw;\n    max-width: 1000px;\n    height: 100%;\n    background: linear-gradient(to right, transparent 0%, #e1e1e1 15%, transparent 30%);\n    -webkit-animation-duration: 1.5s;\n            animation-duration: 1.5s;\n    -webkit-animation-fill-mode: forwards;\n            animation-fill-mode: forwards;\n    -webkit-animation-iteration-count: infinite;\n            animation-iteration-count: infinite;\n    -webkit-animation-name: vueContentPlaceholdersAnimation;\n            animation-name: vueContentPlaceholdersAnimation;\n    -webkit-animation-timing-function: linear;\n            animation-timing-function: linear;\n}\n[class^=\"vue-content-placeholders-\"] + .vue-content-placeholders-img {\n    margin-top: 20px;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/noticias/Imagem.vue?vue&type=style&index=0&id=7e61ca90&scoped=true&lang=css&":
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/noticias/Imagem.vue?vue&type=style&index=0&id=7e61ca90&scoped=true&lang=css& ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\nimg[data-v-7e61ca90]{\n    max-height: 10rem;\n    max-width:  20rem;\n}\n", ""]);
 
 // exports
 
@@ -55540,6 +55686,36 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/noticias/Imagem.vue?vue&type=style&index=0&id=7e61ca90&scoped=true&lang=css&":
+/*!*************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/noticias/Imagem.vue?vue&type=style&index=0&id=7e61ca90&scoped=true&lang=css& ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./Imagem.vue?vue&type=style&index=0&id=7e61ca90&scoped=true&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/noticias/Imagem.vue?vue&type=style&index=0&id=7e61ca90&scoped=true&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/lib/addStyles.js":
 /*!****************************************************!*\
   !*** ./node_modules/style-loader/lib/addStyles.js ***!
@@ -56847,8 +57023,16 @@ var render = function() {
             "div",
             { staticClass: "modal-body" },
             [
+              _c("noticias-imagem", {
+                on: {
+                  changeUrl: function($event) {
+                    return _vm.changeUrl($event)
+                  }
+                }
+              }),
+              _vm._v(" "),
               _c("div", { staticClass: "row" }, [
-                _c("div", { staticClass: "col-6" }, [
+                _c("div", { staticClass: "col-12" }, [
                   _c(
                     "label",
                     { staticClass: "col-form-label", attrs: { for: "nome" } },
@@ -56887,9 +57071,11 @@ var render = function() {
                         ])
                       : _vm._e()
                   ])
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "col-6" }, [
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "row" }, [
+                _c("div", { staticClass: "col-12" }, [
                   _c(
                     "label",
                     { staticClass: "col-form-label", attrs: { for: "nome" } },
@@ -57293,6 +57479,73 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/noticias/Imagem.vue?vue&type=template&id=7e61ca90&scoped=true&":
+/*!******************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/noticias/Imagem.vue?vue&type=template&id=7e61ca90&scoped=true& ***!
+  \******************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "card text-center" }, [
+    _c("img", {
+      directives: [
+        {
+          name: "holder",
+          rawName: "v-holder",
+          value: "img=100px200?auto=yes&theme=social&text=Adicionar Image",
+          expression:
+            "'img=100px200?auto=yes&theme=social&text=Adicionar Image'"
+        }
+      ],
+      staticClass: "card-image",
+      attrs: { src: _vm.image },
+      on: { click: _vm.openFile }
+    }),
+    _vm._v(" "),
+    _c("div", { staticClass: "card-body" }, [
+      _c("input", {
+        staticClass: "form-control",
+        attrs: { hidden: "", type: "file", id: "inputFile" },
+        on: { change: _vm.onFileChange }
+      }),
+      _vm._v(" "),
+      _vm.image
+        ? _c(
+            "button",
+            {
+              staticClass: "btn btn-danger btn-block btn-sm",
+              attrs: { disabled: _vm.submiting },
+              on: { click: _vm.removeLogo }
+            },
+            [
+              _vm.submiting
+                ? _c("i", { staticClass: "fas fa-spinner fa-spin" })
+                : _c("i", { staticClass: "fa fa-" }),
+              _vm._v(" "),
+              _c("span", { staticClass: "d-md-down-none ml-1" }, [
+                _vm._v("Remover")
+              ])
+            ]
+          )
+        : _vm._e()
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/noticias/Index.vue?vue&type=template&id=54a525fc&":
 /*!*****************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/noticias/Index.vue?vue&type=template&id=54a525fc& ***!
@@ -57652,7 +57905,7 @@ var render = function() {
                         "'img=100px200?auto=yes&theme=social&text='+noticia.titulo+''"
                     }
                   ],
-                  attrs: { "data-src": noticia.url_foto, alt: noticia.titulo }
+                  attrs: { src: noticia.url_foto, alt: noticia.titulo }
                 }),
                 _vm._v(" "),
                 _c("p", { staticClass: "card-text" }, [
@@ -57781,7 +58034,7 @@ var render = function() {
                           }
                         ],
                         attrs: {
-                          "data-src": _vm.noticia.url_foto,
+                          src: "storage/" + _vm.noticia.url_foto,
                           alt: _vm.noticia.titulo
                         }
                       })
@@ -74793,6 +75046,7 @@ Vue.component('noticias-edit', __webpack_require__(/*! ./components/noticias/Edi
 Vue.component('noticias-index', __webpack_require__(/*! ./components/noticias/Index.vue */ "./resources/js/components/noticias/Index.vue").default);
 Vue.component('noticias-show', __webpack_require__(/*! ./components/noticias/Show.vue */ "./resources/js/components/noticias/Show.vue").default);
 Vue.component('noticias-ver', __webpack_require__(/*! ./components/noticias/Ver.vue */ "./resources/js/components/noticias/Ver.vue").default);
+Vue.component('noticias-imagem', __webpack_require__(/*! ./components/noticias/Imagem.vue */ "./resources/js/components/noticias/Imagem.vue").default);
 Vue.component('categorias-create', __webpack_require__(/*! ./components/categorias/Create.vue */ "./resources/js/components/categorias/Create.vue").default);
 Vue.component('categorias-edit', __webpack_require__(/*! ./components/categorias/Edit.vue */ "./resources/js/components/categorias/Edit.vue").default);
 Vue.component('categorias-index', __webpack_require__(/*! ./components/categorias/Index.vue */ "./resources/js/components/categorias/Index.vue").default);
@@ -75206,6 +75460,93 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Edit_vue_vue_type_template_id_009c4dd0___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Edit_vue_vue_type_template_id_009c4dd0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/noticias/Imagem.vue":
+/*!*****************************************************!*\
+  !*** ./resources/js/components/noticias/Imagem.vue ***!
+  \*****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Imagem_vue_vue_type_template_id_7e61ca90_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Imagem.vue?vue&type=template&id=7e61ca90&scoped=true& */ "./resources/js/components/noticias/Imagem.vue?vue&type=template&id=7e61ca90&scoped=true&");
+/* harmony import */ var _Imagem_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Imagem.vue?vue&type=script&lang=js& */ "./resources/js/components/noticias/Imagem.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _Imagem_vue_vue_type_style_index_0_id_7e61ca90_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Imagem.vue?vue&type=style&index=0&id=7e61ca90&scoped=true&lang=css& */ "./resources/js/components/noticias/Imagem.vue?vue&type=style&index=0&id=7e61ca90&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _Imagem_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Imagem_vue_vue_type_template_id_7e61ca90_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Imagem_vue_vue_type_template_id_7e61ca90_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "7e61ca90",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/noticias/Imagem.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/noticias/Imagem.vue?vue&type=script&lang=js&":
+/*!******************************************************************************!*\
+  !*** ./resources/js/components/noticias/Imagem.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Imagem_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./Imagem.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/noticias/Imagem.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Imagem_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/noticias/Imagem.vue?vue&type=style&index=0&id=7e61ca90&scoped=true&lang=css&":
+/*!**************************************************************************************************************!*\
+  !*** ./resources/js/components/noticias/Imagem.vue?vue&type=style&index=0&id=7e61ca90&scoped=true&lang=css& ***!
+  \**************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Imagem_vue_vue_type_style_index_0_id_7e61ca90_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./Imagem.vue?vue&type=style&index=0&id=7e61ca90&scoped=true&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/noticias/Imagem.vue?vue&type=style&index=0&id=7e61ca90&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Imagem_vue_vue_type_style_index_0_id_7e61ca90_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Imagem_vue_vue_type_style_index_0_id_7e61ca90_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Imagem_vue_vue_type_style_index_0_id_7e61ca90_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Imagem_vue_vue_type_style_index_0_id_7e61ca90_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Imagem_vue_vue_type_style_index_0_id_7e61ca90_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/components/noticias/Imagem.vue?vue&type=template&id=7e61ca90&scoped=true&":
+/*!************************************************************************************************!*\
+  !*** ./resources/js/components/noticias/Imagem.vue?vue&type=template&id=7e61ca90&scoped=true& ***!
+  \************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Imagem_vue_vue_type_template_id_7e61ca90_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./Imagem.vue?vue&type=template&id=7e61ca90&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/noticias/Imagem.vue?vue&type=template&id=7e61ca90&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Imagem_vue_vue_type_template_id_7e61ca90_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Imagem_vue_vue_type_template_id_7e61ca90_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

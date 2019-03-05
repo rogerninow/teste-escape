@@ -12,8 +12,10 @@ Route::group(['namespace' => 'Noticias'], function() {
 
         Route::get('/{noticia}', 'NoticiasController@show');
         Route::post('/store', 'NoticiasController@store');
+        Route::post('/upload', 'NoticiasController@upload');
         Route::put('/update/{noticia}', 'NoticiasController@update');
+
         Route::delete('/{noticia}', 'NoticiasController@destroy');
+        Route::post('/removelogo', 'NoticiasController@removelogo');
     });
 });
-

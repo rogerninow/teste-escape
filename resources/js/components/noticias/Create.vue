@@ -8,8 +8,10 @@
                 </div>
                 <div class="modal-body">
 
+                    <noticias-imagem @changeUrl="changeUrl($event)"></noticias-imagem>
+
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-12">
                             <label for="nome" class="col-form-label">Nome</label>
                             <div class="input-group">
                                 <div class="input-group-prepend">
@@ -22,7 +24,10 @@
                                 <div class="invalid-feedback" v-if="errors.titulo">{{errors.titulo[0]}}</div>
                             </div>
                         </div>
-                        <div class="col-6">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
                             <label for="nome" class="col-form-label">Categoria</label>
                             <select class="form-control" v-model="noticia.categoria_id">
                                 <option :value="categoria.id" v-for="categoria in options.categorias">{{categoria.nome}}</option>
@@ -111,6 +116,23 @@
                             }
                         })
                         .then(() => { this.submiting = false });
+                }
+            },
+            changeUrl(url) {
+                if (!this.submiting) {
+                   if (this.noticia.url_foto) {
+                        this.submiting = true;
+                        axios.post(`/api/portais/removelogo`, {url: this.noticia.url})
+                            .then(response => {
+                                this.noticia.url_foto = url;
+                            })
+                            .catch(error => {
+                                this.$toasted.error('Erro ao processar imagem!');
+                            })
+                            .then( () => { this.submiting = false })
+                   } else {
+                       this.noticia.url_foto = url;
+                   }
                 }
             },
             changeCategoria(categoria) {
