@@ -3,7 +3,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title text-center">Notícia <strong>#{{noticia.id}}</strong></h4>
+                    <h4 class="modal-title text-center">Cadastrar Notícia</h4>
                     <button type="button" class="close" data-dismiss="modal" @click="close">&times;</button>
                 </div>
                 <div class="modal-body">
@@ -24,17 +24,9 @@
                         </div>
                         <div class="col-6">
                             <label for="nome" class="col-form-label">Categoria</label>
-                            <multiselect
-                                :disabled="loadingCat"
-                                v-model="noticia.categoria"
-                                :options="options.categorias"
-                                :searchable="false"
-                                :show-labels="false"
-                                :allow-empty="false"
-                                @select="changeCategoria"
-                                placeholder="Categorias..."
-                                :class="{'is-invalid': errors.categoria}" >
-                            </multiselect>
+                            <select class="form-control" v-model="noticia.categoria_id">
+                                <option :value="categoria.id" v-for="categoria in options.categorias">{{categoria.nome}}</option>
+                            </select>
                             <div class="invalid-feedback" v-if="errors.categoria">{{errors.categoria[0]}}</div>
                         </div>
                     </div>
@@ -57,7 +49,7 @@
                 <div class="modal-footer">
                     <div class="float-right">
                         <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" @click="close">Fechar</button>
-                        <button type="button" class="btn btn-warning btn-sm text-white" @click="alterar" :disabled="submiting">Alterar</button>
+                        <button type="button" class="btn btn-primary btn-sm text-white" @click="cadastrar" :disabled="submiting">Cadastrar</button>
                     </div>
                 </div>
             </div>
@@ -72,7 +64,7 @@
                 loading: true,
                 loadingCat: true,
                 submiting: false,
-                noticia: [],
+                noticia: {url_foto: ''},
                 options: {
                     categorias: []
                 },
@@ -80,6 +72,7 @@
             }
         },
         mounted() {
+            this.loading = false;
             this.getCategorias();
         },
         methods: {
@@ -87,9 +80,7 @@
                 this.loadingCat = true;
                 axios.post(`/api/categorias/filter`)
                     .then(response => { 
-                        response.data.forEach((categoria) => {
-                            this.options.categorias.push(categoria.nome);
-                        });
+                        this.options.categorias = response.data;
                     })
                     .catch(error => {
                         this.$toasted.error('Nenhuma categoria encontrada!', {
@@ -119,7 +110,7 @@
                                 this.errors = error.response.data.errors;
                             }
                         })
-                        .then(() => { this.submiting = false; console.log(this.promocao) });
+                        .then(() => { this.submiting = false });
                 }
             },
             changeCategoria(categoria) {

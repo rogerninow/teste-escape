@@ -3,38 +3,43 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title text-center">Notícia <strong>#{{noticia.id}}</strong></h4>
+                    <h4 class="modal-title text-center">{{noticia.titulo}}</h4>
                     <button type="button" class="close" data-dismiss="modal" @click="close">&times;</button>
                 </div>
                 <div class="modal-body">
+                    
+                    <!--<div class="row">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <i class="fa fa-file"></i>
+                                </div>
+                            </div>
+                            <input type="file" class="form-control" id="url_foto"
+                                    :class="{'is-invalid': errors.url_foto}">
+                            <div class="invalid-feedback" v-if="errors.url_foto">{{errors.url_foto[0]}}</div>
+                        </div>
+                    </div>-->
 
                     <div class="row">
                         <div class="col-6">
-                            <label for="nome" class="col-form-label">Nome</label>
+                            <label for="nome" class="col-form-label">Título</label>
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <div class="input-group-text">
                                         <i class="fa fa-font"></i>
                                     </div>
                                 </div>
-                                <input type="text" class="form-control" id="nome" size="100"
+                                <input type="text" class="form-control" id="titulo" size="100"
                                        :class="{'is-invalid': errors.titulo}" v-model="noticia.titulo">
                                 <div class="invalid-feedback" v-if="errors.titulo">{{errors.titulo[0]}}</div>
                             </div>
                         </div>
                         <div class="col-6">
                             <label for="nome" class="col-form-label">Categoria</label>
-                            <multiselect
-                                :disabled="loadingCat"
-                                v-model="noticia.categoria"
-                                :options="options.categorias"
-                                :searchable="false"
-                                :show-labels="false"
-                                :allow-empty="false"
-                                @select="changeCategoria"
-                                placeholder="Categorias..."
-                                :class="{'is-invalid': errors.categoria}" >
-                            </multiselect>
+                            <select class="form-control" v-model="noticia.categoria_id">
+                                <option :value="categoria.id" v-for="categoria in options.categorias">{{categoria.nome}}</option>
+                            </select>
                             <div class="invalid-feedback" v-if="errors.categoria">{{errors.categoria[0]}}</div>
                         </div>
                     </div>
@@ -74,9 +79,9 @@
                 loading: true,
                 loadingCat: true,
                 submiting: false,
-                noticia: [],
+                noticia: {url_foto: ''},
                 options: {
-                    categorias: []
+                    categorias: {}
                 },
                 errors: {},
             }
@@ -106,9 +111,7 @@
                 this.loadingCat = true;
                 axios.post(`/api/categorias/filter`)
                     .then(response => { 
-                        response.data.forEach((categoria) => {
-                            this.options.categorias.push(categoria.nome);
-                        });
+                        this.options.categorias = response.data;
                     })
                     .catch(error => {
                         this.$toasted.error('Nenhuma categoria encontrada!', {
@@ -123,8 +126,9 @@
             },
             alterar(id) {
                 if (!this.submiting) {
+                    console.log(this.noticia);
                     this.submiting = true;
-                    axios.post(`/api/noticias/update/${this.noticiaId}`, this.noticia)
+                    axios.put(`/api/noticias/update/${this.noticiaId}`, this.noticia)
                         .then(response => {
                             this.$toasted.success('Notícia alterada!');
                             setTimeout( () => {
@@ -138,7 +142,7 @@
                                 this.errors = error.response.data.errors;
                             }
                         })
-                        .then(() => { this.submiting = false; console.log(this.promocao) });
+                        .then(() => { this.submiting = false });
                 }
             },
             changeCategoria(categoria) {

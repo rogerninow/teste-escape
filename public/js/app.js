@@ -1779,9 +1779,74 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      loading: true,
+      loadingCat: true,
+      submiting: false,
+      categoria: {},
+      errors: {}
+    };
+  },
   mounted: function mounted() {
-    console.log('Component mounted.');
+    this.loading = false;
+  },
+  methods: {
+    cadastrar: function cadastrar() {
+      var _this = this;
+
+      if (!this.submiting) {
+        this.submiting = true;
+        console.log(this.categoria);
+        axios.post("/api/categorias/store", this.categoria).then(function (response) {
+          _this.$toasted.success('Categoria criada!');
+
+          setTimeout(function () {
+            location.href = '/categorias';
+          }, 500);
+        }).catch(function (error) {
+          _this.$toasted.error('Erro ao criar categoria!');
+
+          if (error.response.data.errors) {
+            _this.errors = error.response.data.errors;
+          }
+        }).then(function () {
+          _this.submiting = false;
+        });
+      }
+    },
+    close: function close() {
+      this.$emit('close');
+    }
   }
 });
 
@@ -1812,9 +1877,121 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['categoriaId'],
+  data: function data() {
+    return {
+      loading: true,
+      loadingCat: true,
+      submiting: false,
+      categoria: [],
+      options: {
+        categorias: []
+      },
+      errors: {}
+    };
+  },
   mounted: function mounted() {
-    console.log('Component mounted.');
+    this.getCategorias();
+    this.getNoticia();
+  },
+  methods: {
+    getNoticia: function getNoticia() {
+      var _this = this;
+
+      this.loading = true;
+      axios.get("/api/categorias/".concat(this.categoriaId)).then(function (response) {
+        _this.categoria = response.data;
+      }).catch(function (error) {
+        _this.$toasted.error('Esta notícia não existe!', {
+          action: {
+            text: 'X',
+            onClick: function onClick(e, toastObject) {
+              toastObject.goAway(0);
+            }
+          }
+        });
+
+        location.href = '/categorias';
+      }).then(function () {
+        _this.loading = false;
+      });
+    },
+    getCategorias: function getCategorias() {
+      var _this2 = this;
+
+      this.loadingCat = true;
+      axios.post("/api/categorias/filter").then(function (response) {
+        response.data.forEach(function (categoria) {
+          _this2.options.categorias.push(categoria.nome);
+        });
+      }).catch(function (error) {
+        _this2.$toasted.error('Nenhuma categoria encontrada!', {
+          action: {
+            text: 'X',
+            onClick: function onClick(e, toastObject) {
+              toastObject.goAway(0);
+            }
+          }
+        });
+      }).then(function () {
+        _this2.loadingCat = false;
+      });
+    },
+    alterar: function alterar(id) {
+      var _this3 = this;
+
+      if (!this.submiting) {
+        this.submiting = true;
+        axios.put("/api/categorias/update/".concat(this.categoriaId), this.categoria).then(function (response) {
+          _this3.$toasted.success('Categoria alterada!');
+
+          setTimeout(function () {
+            location.href = '/categorias';
+          }, 500);
+        }).catch(function (error) {
+          _this3.$toasted.error('Erro ao criar categoria!');
+
+          if (error.response.data.errors) {
+            _this3.errors = error.response.data.errors;
+          }
+        }).then(function () {
+          _this3.submiting = false;
+          console.log(_this3.promocao);
+        });
+      }
+    },
+    close: function close() {
+      this.$emit('close');
+    }
   }
 });
 
@@ -1845,9 +2022,143 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      categorias: [],
+      filters: {
+        search: ''
+      },
+      loading: true,
+      submitingDestroy: false,
+      modalEdit: false,
+      modalNew: false,
+      categoriaId: ''
+    };
+  },
   mounted: function mounted() {
-    console.log('Component mounted.');
+    this.getCategoria();
+  },
+  methods: {
+    getCategoria: function getCategoria() {
+      var _this = this;
+
+      this.categorias = [];
+      axios.post("/api/categorias/filter", this.filters).then(function (response) {
+        _this.categorias = response.data;
+        delete response.data.data; //this.filters.pagination = response.data;
+      }).catch(function (error) {
+        _this.$toasted.error('Erro ao buscar as categorias', {
+          action: {
+            text: 'X',
+            onClick: function onClick(e, toastObject) {
+              toastObject.goAway(0);
+            }
+          }
+        });
+      }).then(function () {
+        _this.loading = false;
+      });
+    },
+    editar: function editar(id) {
+      this.modalEdit = true;
+      this.categoriaId = id;
+      setTimeout(function () {
+        $('#editarCategoria').modal('show');
+      }, 100);
+    },
+    cadastrar: function cadastrar() {
+      this.modalNew = true;
+      setTimeout(function () {
+        $('#cadastrarCategoria').modal('show');
+      }, 100);
+    },
+    remover: function remover(id) {
+      var _this2 = this;
+
+      if (!this.submitingDestroy) {
+        this.submitingDestroy = true;
+        this.$swal({
+          title: "Você tem certeza?",
+          text: "Uma vez removido, não será possivel restaurar esta categoria!",
+          icon: "warning",
+          buttons: true,
+          dangerMode: true,
+          showCancelButton: true
+        }).then(function (willDelete) {
+          if (willDelete.value) {
+            axios.delete("/api/categorias/".concat(id)).then(function (response) {
+              _this2.$toasted.success('Categoria removida!');
+
+              _this2.filters.search = '';
+              setTimeout(function () {
+                location.href = '/categorias';
+              }, 500);
+            }).catch(function (error) {
+              _this2.$toasted.error('Erro ao remover a categoria!');
+            });
+          }
+
+          _this2.submitingDestroy = false;
+        });
+      }
+    }
   }
 });
 
@@ -1921,21 +2232,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       loading: true,
       loadingCat: true,
       submiting: false,
-      noticia: [],
+      noticia: {
+        url_foto: ''
+      },
       options: {
         categorias: []
       },
@@ -1943,6 +2248,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
+    this.loading = false;
     this.getCategorias();
   },
   methods: {
@@ -1951,9 +2257,7 @@ __webpack_require__.r(__webpack_exports__);
 
       this.loadingCat = true;
       axios.post("/api/categorias/filter").then(function (response) {
-        response.data.forEach(function (categoria) {
-          _this.options.categorias.push(categoria.nome);
-        });
+        _this.options.categorias = response.data;
       }).catch(function (error) {
         _this.$toasted.error('Nenhuma categoria encontrada!', {
           action: {
@@ -1986,7 +2290,6 @@ __webpack_require__.r(__webpack_exports__);
           }
         }).then(function () {
           _this2.submiting = false;
-          console.log(_this2.promocao);
         });
       }
     },
@@ -2077,6 +2380,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['noticiaId'],
   data: function data() {
@@ -2084,9 +2392,11 @@ __webpack_require__.r(__webpack_exports__);
       loading: true,
       loadingCat: true,
       submiting: false,
-      noticia: [],
+      noticia: {
+        url_foto: ''
+      },
       options: {
-        categorias: []
+        categorias: {}
       },
       errors: {}
     };
@@ -2122,9 +2432,7 @@ __webpack_require__.r(__webpack_exports__);
 
       this.loadingCat = true;
       axios.post("/api/categorias/filter").then(function (response) {
-        response.data.forEach(function (categoria) {
-          _this2.options.categorias.push(categoria.nome);
-        });
+        _this2.options.categorias = response.data;
       }).catch(function (error) {
         _this2.$toasted.error('Nenhuma categoria encontrada!', {
           action: {
@@ -2142,8 +2450,9 @@ __webpack_require__.r(__webpack_exports__);
       var _this3 = this;
 
       if (!this.submiting) {
+        console.log(this.noticia);
         this.submiting = true;
-        axios.post("/api/noticias/update/".concat(this.noticiaId), this.noticia).then(function (response) {
+        axios.put("/api/noticias/update/".concat(this.noticiaId), this.noticia).then(function (response) {
           _this3.$toasted.success('Notícia alterada!');
 
           setTimeout(function () {
@@ -2157,7 +2466,6 @@ __webpack_require__.r(__webpack_exports__);
           }
         }).then(function () {
           _this3.submiting = false;
-          console.log(_this3.promocao);
         });
       }
     },
@@ -2324,7 +2632,7 @@ __webpack_require__.r(__webpack_exports__);
       }, 100);
     },
     cadastrar: function cadastrar() {
-      this.modaNew = true;
+      this.modalNew = true;
       setTimeout(function () {
         $('#cadastrarNoticia').modal('show');
       }, 100);
@@ -55976,28 +56284,132 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c(
+    "div",
+    {
+      staticClass: "modal fade",
+      attrs: { id: "cadastrarCategoria", role: "dialog" }
+    },
+    [
+      _c("div", { staticClass: "modal-dialog modal-lg" }, [
+        _c("div", { staticClass: "modal-content" }, [
+          _c("div", { staticClass: "modal-header" }, [
+            _c("h4", { staticClass: "modal-title text-center" }, [
+              _vm._v("Categoria "),
+              _c("strong", [_vm._v("#" + _vm._s(_vm.categoria.id))])
+            ]),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "close",
+                attrs: { type: "button", "data-dismiss": "modal" },
+                on: { click: _vm.close }
+              },
+              [_vm._v("×")]
+            )
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "modal-body" },
+            [
+              _c("div", { staticClass: "row" }, [
+                _c("div", { staticClass: "col-12" }, [
+                  _c(
+                    "label",
+                    { staticClass: "col-form-label", attrs: { for: "nome" } },
+                    [_vm._v("Nome")]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "input-group" }, [
+                    _vm._m(0),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.categoria.nome,
+                          expression: "categoria.nome"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      class: { "is-invalid": _vm.errors.nome },
+                      attrs: { type: "text", id: "nome", size: "100" },
+                      domProps: { value: _vm.categoria.nome },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.categoria, "nome", $event.target.value)
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _vm.errors.nome
+                      ? _c("div", { staticClass: "invalid-feedback" }, [
+                          _vm._v(_vm._s(_vm.errors.nome[0]))
+                        ])
+                      : _vm._e()
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _vm.loading
+                ? _c(
+                    "content-placeholders",
+                    [
+                      _c("content-placeholders-heading", {
+                        attrs: { img: true }
+                      }),
+                      _vm._v(" "),
+                      _c("content-placeholders-text", { attrs: { lines: 15 } })
+                    ],
+                    1
+                  )
+                : _vm._e()
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "modal-footer" }, [
+            _c("div", { staticClass: "float-right" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-default btn-sm",
+                  attrs: { type: "button", "data-dismiss": "modal" },
+                  on: { click: _vm.close }
+                },
+                [_vm._v("Fechar")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary btn-sm text-white",
+                  attrs: { type: "button", disabled: _vm.submiting },
+                  on: { click: _vm.cadastrar }
+                },
+                [_vm._v("Cadastrar")]
+              )
+            ])
+          ])
+        ])
+      ])
+    ]
+  )
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container" }, [
-      _c("div", { staticClass: "row justify-content-center" }, [
-        _c("div", { staticClass: "col-md-8" }, [
-          _c("div", { staticClass: "card" }, [
-            _c("div", { staticClass: "card-header" }, [
-              _vm._v("Example Component")
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-body" }, [
-              _vm._v(
-                "\n                    I'm an example component.\n                "
-              )
-            ])
-          ])
-        ])
+    return _c("div", { staticClass: "input-group-prepend" }, [
+      _c("div", { staticClass: "input-group-text" }, [
+        _c("i", { staticClass: "fa fa-font" })
       ])
     ])
   }
@@ -56023,28 +56435,132 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c(
+    "div",
+    {
+      staticClass: "modal fade",
+      attrs: { id: "editarCategoria", role: "dialog" }
+    },
+    [
+      _c("div", { staticClass: "modal-dialog modal-lg" }, [
+        _c("div", { staticClass: "modal-content" }, [
+          _c("div", { staticClass: "modal-header" }, [
+            _c("h4", { staticClass: "modal-title text-center" }, [
+              _vm._v("Categoria "),
+              _c("strong", [_vm._v("#" + _vm._s(_vm.categoria.id))])
+            ]),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "close",
+                attrs: { type: "button", "data-dismiss": "modal" },
+                on: { click: _vm.close }
+              },
+              [_vm._v("×")]
+            )
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "modal-body" },
+            [
+              _c("div", { staticClass: "row" }, [
+                _c("div", { staticClass: "col-12" }, [
+                  _c(
+                    "label",
+                    { staticClass: "col-form-label", attrs: { for: "nome" } },
+                    [_vm._v("Nome")]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "input-group" }, [
+                    _vm._m(0),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.categoria.nome,
+                          expression: "categoria.nome"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      class: { "is-invalid": _vm.errors.nome },
+                      attrs: { type: "text", id: "nome", size: "100" },
+                      domProps: { value: _vm.categoria.nome },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.categoria, "nome", $event.target.value)
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _vm.errors.nome
+                      ? _c("div", { staticClass: "invalid-feedback" }, [
+                          _vm._v(_vm._s(_vm.errors.nome[0]))
+                        ])
+                      : _vm._e()
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _vm.loading
+                ? _c(
+                    "content-placeholders",
+                    [
+                      _c("content-placeholders-heading", {
+                        attrs: { img: true }
+                      }),
+                      _vm._v(" "),
+                      _c("content-placeholders-text", { attrs: { lines: 15 } })
+                    ],
+                    1
+                  )
+                : _vm._e()
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "modal-footer" }, [
+            _c("div", { staticClass: "float-right" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-default btn-sm",
+                  attrs: { type: "button", "data-dismiss": "modal" },
+                  on: { click: _vm.close }
+                },
+                [_vm._v("Fechar")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-warning btn-sm text-white",
+                  attrs: { type: "button", disabled: _vm.submiting },
+                  on: { click: _vm.alterar }
+                },
+                [_vm._v("Alterar")]
+              )
+            ])
+          ])
+        ])
+      ])
+    ]
+  )
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container" }, [
-      _c("div", { staticClass: "row justify-content-center" }, [
-        _c("div", { staticClass: "col-md-8" }, [
-          _c("div", { staticClass: "card" }, [
-            _c("div", { staticClass: "card-header" }, [
-              _vm._v("Example Component")
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-body" }, [
-              _vm._v(
-                "\n                    I'm an example component.\n                "
-              )
-            ])
-          ])
-        ])
+    return _c("div", { staticClass: "input-group-prepend" }, [
+      _c("div", { staticClass: "input-group-text" }, [
+        _c("i", { staticClass: "fa fa-font" })
       ])
     ])
   }
@@ -56070,28 +56586,217 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", { staticClass: "album text-muted" }, [
+    _c(
+      "div",
+      { staticClass: "container" },
+      [
+        !_vm.loading
+          ? _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "card col-12" }, [
+                _c("div", { staticClass: "card-body" }, [
+                  _c("div", { staticClass: "row" }, [
+                    _c("div", { staticClass: "input-group col-10" }, [
+                      _vm._m(0),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model.trim",
+                            value: _vm.filters.search,
+                            expression: "filters.search",
+                            modifiers: { trim: true }
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: {
+                          type: "text",
+                          placeholder: "Procurar...",
+                          "aria-label": "procurar",
+                          "aria-describedby": "basic-addon1"
+                        },
+                        domProps: { value: _vm.filters.search },
+                        on: {
+                          keyup: function($event) {
+                            if (
+                              !$event.type.indexOf("key") &&
+                              _vm._k(
+                                $event.keyCode,
+                                "enter",
+                                13,
+                                $event.key,
+                                "Enter"
+                              )
+                            ) {
+                              return null
+                            }
+                            return _vm.getCategoria($event)
+                          },
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(
+                              _vm.filters,
+                              "search",
+                              $event.target.value.trim()
+                            )
+                          },
+                          blur: function($event) {
+                            return _vm.$forceUpdate()
+                          }
+                        }
+                      })
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col col-2" }, [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-primary",
+                          on: { click: _vm.cadastrar }
+                        },
+                        [_vm._v("Novo")]
+                      )
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("br"),
+                  _vm._v(" "),
+                  _c("table", { staticClass: "table table-hover" }, [
+                    _vm._m(1),
+                    _vm._v(" "),
+                    _c(
+                      "tbody",
+                      _vm._l(_vm.categorias, function(categoria) {
+                        return _c("tr", [
+                          _c("td", [_vm._v(_vm._s(categoria.id))]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v(_vm._s(categoria.nome))]),
+                          _vm._v(" "),
+                          _c("td", { staticClass: "d-none d-sm-table-cell" }, [
+                            _c("small", [
+                              _vm._v(
+                                _vm._s(
+                                  _vm._f("moment")(categoria.created_at, "LL")
+                                )
+                              )
+                            ]),
+                            _vm._v(
+                              "\n                                    -\n                                    "
+                            ),
+                            _c("small", { staticClass: "text-muted" }, [
+                              _vm._v(
+                                _vm._s(
+                                  _vm._f("moment")(categoria.created_at, "LT")
+                                )
+                              )
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [
+                            _c(
+                              "button",
+                              {
+                                staticClass:
+                                  "btn btn-warning btn-sm text-white",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.editar(categoria.id)
+                                  }
+                                }
+                              },
+                              [_c("i", { staticClass: "fa fa-edit" })]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-danger btn-sm",
+                                attrs: { disabled: _vm.submitingDestroy },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.remover(categoria.id)
+                                  }
+                                }
+                              },
+                              [_c("i", { staticClass: "fa fa-trash" })]
+                            )
+                          ])
+                        ])
+                      }),
+                      0
+                    )
+                  ])
+                ])
+              ])
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.loading
+          ? _c(
+              "content-placeholders",
+              [
+                _c("content-placeholders-heading", { attrs: { img: true } }),
+                _vm._v(" "),
+                _c("content-placeholders-text", { attrs: { lines: 30 } })
+              ],
+              1
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.modalEdit
+          ? _c("categorias-edit", {
+              attrs: { categoriaId: _vm.categoriaId },
+              on: {
+                close: function($event) {
+                  _vm.modalEdit = false
+                }
+              }
+            })
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.modalNew
+          ? _c("categorias-create", {
+              on: {
+                close: function($event) {
+                  _vm.modalNew = false
+                }
+              }
+            })
+          : _vm._e()
+      ],
+      1
+    )
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container" }, [
-      _c("div", { staticClass: "row justify-content-center" }, [
-        _c("div", { staticClass: "col-md-8" }, [
-          _c("div", { staticClass: "card" }, [
-            _c("div", { staticClass: "card-header" }, [
-              _vm._v("Example Component")
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-body" }, [
-              _vm._v(
-                "\n                    I'm an example component.\n                "
-              )
-            ])
-          ])
-        ])
+    return _c("div", { staticClass: "input-group-prepend" }, [
+      _c(
+        "span",
+        { staticClass: "input-group-text", attrs: { id: "basic-addon1" } },
+        [_c("i", { staticClass: "fa fa-search" })]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("ID")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Nome")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Criado em:")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Ações")])
       ])
     ])
   }
@@ -56128,8 +56833,7 @@ var render = function() {
         _c("div", { staticClass: "modal-content" }, [
           _c("div", { staticClass: "modal-header" }, [
             _c("h4", { staticClass: "modal-title text-center" }, [
-              _vm._v("Notícia "),
-              _c("strong", [_vm._v("#" + _vm._s(_vm.noticia.id))])
+              _vm._v("Cadastrar Notícia")
             ]),
             _vm._v(" "),
             _c(
@@ -56189,44 +56893,61 @@ var render = function() {
                   ])
                 ]),
                 _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "col-6" },
-                  [
-                    _c(
-                      "label",
-                      { staticClass: "col-form-label", attrs: { for: "nome" } },
-                      [_vm._v("Categoria")]
-                    ),
-                    _vm._v(" "),
-                    _c("multiselect", {
-                      class: { "is-invalid": _vm.errors.categoria },
-                      attrs: {
-                        disabled: _vm.loadingCat,
-                        options: _vm.options.categorias,
-                        searchable: false,
-                        "show-labels": false,
-                        "allow-empty": false,
-                        placeholder: "Categorias..."
-                      },
-                      on: { select: _vm.changeCategoria },
-                      model: {
-                        value: _vm.noticia.categoria,
-                        callback: function($$v) {
-                          _vm.$set(_vm.noticia, "categoria", $$v)
-                        },
-                        expression: "noticia.categoria"
+                _c("div", { staticClass: "col-6" }, [
+                  _c(
+                    "label",
+                    { staticClass: "col-form-label", attrs: { for: "nome" } },
+                    [_vm._v("Categoria")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.noticia.categoria_id,
+                          expression: "noticia.categoria_id"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      on: {
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.$set(
+                            _vm.noticia,
+                            "categoria_id",
+                            $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          )
+                        }
                       }
+                    },
+                    _vm._l(_vm.options.categorias, function(categoria) {
+                      return _c(
+                        "option",
+                        { domProps: { value: categoria.id } },
+                        [_vm._v(_vm._s(categoria.nome))]
+                      )
                     }),
-                    _vm._v(" "),
-                    _vm.errors.categoria
-                      ? _c("div", { staticClass: "invalid-feedback" }, [
-                          _vm._v(_vm._s(_vm.errors.categoria[0]))
-                        ])
-                      : _vm._e()
-                  ],
-                  1
-                )
+                    0
+                  ),
+                  _vm._v(" "),
+                  _vm.errors.categoria
+                    ? _c("div", { staticClass: "invalid-feedback" }, [
+                        _vm._v(_vm._s(_vm.errors.categoria[0]))
+                      ])
+                    : _vm._e()
+                ])
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "row" }, [
@@ -56300,11 +57021,11 @@ var render = function() {
               _c(
                 "button",
                 {
-                  staticClass: "btn btn-warning btn-sm text-white",
+                  staticClass: "btn btn-primary btn-sm text-white",
                   attrs: { type: "button", disabled: _vm.submiting },
-                  on: { click: _vm.alterar }
+                  on: { click: _vm.cadastrar }
                 },
-                [_vm._v("Alterar")]
+                [_vm._v("Cadastrar")]
               )
             ])
           ])
@@ -56357,8 +57078,7 @@ var render = function() {
         _c("div", { staticClass: "modal-content" }, [
           _c("div", { staticClass: "modal-header" }, [
             _c("h4", { staticClass: "modal-title text-center" }, [
-              _vm._v("Notícia "),
-              _c("strong", [_vm._v("#" + _vm._s(_vm.noticia.id))])
+              _vm._v(_vm._s(_vm.noticia.titulo))
             ]),
             _vm._v(" "),
             _c(
@@ -56381,7 +57101,7 @@ var render = function() {
                   _c(
                     "label",
                     { staticClass: "col-form-label", attrs: { for: "nome" } },
-                    [_vm._v("Nome")]
+                    [_vm._v("Título")]
                   ),
                   _vm._v(" "),
                   _c("div", { staticClass: "input-group" }, [
@@ -56398,7 +57118,7 @@ var render = function() {
                       ],
                       staticClass: "form-control",
                       class: { "is-invalid": _vm.errors.titulo },
-                      attrs: { type: "text", id: "nome", size: "100" },
+                      attrs: { type: "text", id: "titulo", size: "100" },
                       domProps: { value: _vm.noticia.titulo },
                       on: {
                         input: function($event) {
@@ -56418,44 +57138,61 @@ var render = function() {
                   ])
                 ]),
                 _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "col-6" },
-                  [
-                    _c(
-                      "label",
-                      { staticClass: "col-form-label", attrs: { for: "nome" } },
-                      [_vm._v("Categoria")]
-                    ),
-                    _vm._v(" "),
-                    _c("multiselect", {
-                      class: { "is-invalid": _vm.errors.categoria },
-                      attrs: {
-                        disabled: _vm.loadingCat,
-                        options: _vm.options.categorias,
-                        searchable: false,
-                        "show-labels": false,
-                        "allow-empty": false,
-                        placeholder: "Categorias..."
-                      },
-                      on: { select: _vm.changeCategoria },
-                      model: {
-                        value: _vm.noticia.categoria,
-                        callback: function($$v) {
-                          _vm.$set(_vm.noticia, "categoria", $$v)
-                        },
-                        expression: "noticia.categoria"
+                _c("div", { staticClass: "col-6" }, [
+                  _c(
+                    "label",
+                    { staticClass: "col-form-label", attrs: { for: "nome" } },
+                    [_vm._v("Categoria")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.noticia.categoria_id,
+                          expression: "noticia.categoria_id"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      on: {
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.$set(
+                            _vm.noticia,
+                            "categoria_id",
+                            $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          )
+                        }
                       }
+                    },
+                    _vm._l(_vm.options.categorias, function(categoria) {
+                      return _c(
+                        "option",
+                        { domProps: { value: categoria.id } },
+                        [_vm._v(_vm._s(categoria.nome))]
+                      )
                     }),
-                    _vm._v(" "),
-                    _vm.errors.categoria
-                      ? _c("div", { staticClass: "invalid-feedback" }, [
-                          _vm._v(_vm._s(_vm.errors.categoria[0]))
-                        ])
-                      : _vm._e()
-                  ],
-                  1
-                )
+                    0
+                  ),
+                  _vm._v(" "),
+                  _vm.errors.categoria
+                    ? _c("div", { staticClass: "invalid-feedback" }, [
+                        _vm._v(_vm._s(_vm.errors.categoria[0]))
+                      ])
+                    : _vm._e()
+                ])
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "row" }, [

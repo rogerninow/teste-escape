@@ -139,7 +139,7 @@
                 }, 100);
             },
             cadastrar() {
-                this.modaNew = true;
+                this.modalNew = true;
                 setTimeout(() => {
                     $('#cadastrarNoticia').modal('show');
                 }, 100);
