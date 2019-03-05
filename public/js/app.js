@@ -2238,9 +2238,7 @@ __webpack_require__.r(__webpack_exports__);
       loading: true,
       loadingCat: true,
       submiting: false,
-      noticia: {
-        url_foto: ''
-      },
+      noticia: {},
       options: {
         categorias: []
       },
@@ -2392,9 +2390,7 @@ __webpack_require__.r(__webpack_exports__);
       loading: true,
       loadingCat: true,
       submiting: false,
-      noticia: {
-        url_foto: ''
-      },
+      noticia: {},
       options: {
         categorias: {}
       },

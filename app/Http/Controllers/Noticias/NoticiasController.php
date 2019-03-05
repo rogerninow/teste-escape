@@ -33,8 +33,7 @@ class NoticiasController extends Controller
         $this->validate($request, [
             'titulo'        => 'required|string',
             'categoria_id'  => 'required|numeric',
-            'texto'         => 'required|string',
-            'url_foto'      => 'string'
+            'texto'         => 'required|string'
         ]);
 
        try {
@@ -56,8 +55,7 @@ class NoticiasController extends Controller
         $this->validate($request, [
             'titulo'        => 'required|string',
             'categoria_id'  => 'required|numeric',
-            'texto'         => 'required|string',
-            'url_foto'      => 'string'
+            'texto'         => 'required|string'
         ]);
 
         $noticia = Noticia::find($request->id);

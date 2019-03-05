@@ -79,7 +79,7 @@
                 loading: true,
                 loadingCat: true,
                 submiting: false,
-                noticia: {url_foto: ''},
+                noticia: {},
                 options: {
                     categorias: {}
                 },
